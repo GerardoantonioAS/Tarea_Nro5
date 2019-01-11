@@ -189,3 +189,25 @@ ratesBookingCom <- as.numeric(ratesBookingCom)
 dfBookingCom <- data.frame(nombre_hotel = textoBookingCom, rate = ratesBookingCom)
 
 # Grafique la variable dfBookingCom
+
+
+#==================== usando reclamos.cl/trasportes ====================#
+
+# Se asigna la segunda página de reclamos.cl/trasportes
+paginaReclamosCl<- 'https://www.reclamos.cl/transportes?page=1'
+
+# Lellendo la página de transportes
+readHtmlReclamosCl <- read_html(paginaReclamosCl)
+
+# Extrayendo el contenido de la tabla que contiene todos los reclamos dispuestos en este sitio
+contenidoReclamosClTable <- html_nodes(readHtmlReclamosCl,'table')
+
+# Se extraen todos los elementos que contienen links dentro de la tabla
+contenidoReclamosClA <- html_nodes(contenidoReclamosClTable,'a')
+
+# Se extraen todos los links y se almacenan en una lista
+linksReclamosCl <- html_attr(contenidoReclamosClA,"href")
+
+# Descargue cada uno de los link y guarde su información
+
+
