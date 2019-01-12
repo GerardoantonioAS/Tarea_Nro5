@@ -63,10 +63,6 @@ write.table(dfPalabrasNoticia, file="PalabrasNoticia.txt")
 # Extrayendo los elementos que contienen las tablas
 tablaProductos <- html_nodes(webpage, ".productos")
 
-# Limpiando $ comas y cambios de puntos por coma
-textoNoticia <- gsub("\n","",textoNoticia)
-textoNoticia <- gsub("\"","",textoNoticia)
-
 # Extraccio de el contenido de las tablas usando el tag table
 contenedorDeTablas <- html_nodes(tablaProductos, "table")
 
@@ -82,17 +78,38 @@ tabla2 <- html_table(contenedorDeTablas[2][[1]])
 # Viendo el contenido de la posición 1,2 de la tabla2
 print(tabla2[1,2])
 
-# Graficando los productos
+# Limpiando $ comas y cambios de puntos por coma
+tabla1$Valor <- gsub("\\$","",tabla1$Valor)
+tabla1$Valor <- gsub("[.]","",tabla1$Valor)
+tabla1$Valor <- as.numeric(gsub(",",".",tabla1$Valor))
+
+tabla2$Valor <- gsub("\\$","",tabla2$Valor)
+tabla2$Valor <- gsub("[.]","",tabla2$Valor)
+tabla2$Valor <- as.numeric(gsub(",",".",tabla2$Valor))
+
+# Combinando los dos data frames y creando un tercer data frame
+tablaMerge <- rbind(tabla1,tabla2)
+
+# Realizando una busqueda en el dataframe
+elementosEncontrados <- tablaMerge[which(tablaMerge$Supermercado == "Unimarc"), ]
+
+# Creando una tercera columna "ProductoSupermercado" con la 
+# intención de generando nombres únicos, esto es para
+# graficar el valor de cada producto en cada supermercado
+tablaMerge$ProductoSupermercado <- paste(tablaMerge$Producto," ",tablaMerge$Supermercado) 
+
+################### Graficando los productos
 library('ggplot2')
 
-# Gráfico Barra
-tabla1 %>%
+# Gráfico Barra por producto concatenado con supermercado,
+# respecto al costo
+tablaMerge %>%
   ggplot() +
-  aes(x = Producto, y = Valor) +
+  aes(x = ProductoSupermercado, y = Valor) +
   geom_bar(stat="identity")
 
-  # Gráfico boxplot
-tabla1 %>%
+# Gráfico boxplot diferenciado por producto
+tablaMerge %>%
   ggplot() +
   geom_boxplot(aes(x = Producto, y = Valor)) +
   theme_bw()
