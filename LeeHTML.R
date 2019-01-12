@@ -63,6 +63,10 @@ write.table(dfPalabrasNoticia, file="PalabrasNoticia.txt")
 # Extrayendo los elementos que contienen las tablas
 tablaProductos <- html_nodes(webpage, ".productos")
 
+# Limpiando $ comas y cambios de puntos por coma
+textoNoticia <- gsub("\n","",textoNoticia)
+textoNoticia <- gsub("\"","",textoNoticia)
+
 # Extraccio de el contenido de las tablas usando el tag table
 contenedorDeTablas <- html_nodes(tablaProductos, "table")
 
@@ -79,7 +83,7 @@ tabla2 <- html_table(contenedorDeTablas[2][[1]])
 print(tabla2[1,2])
 
 # Graficando los productos
-library(ggplot2)
+library('ggplot2')
 
 # Gráfico Barra
 tabla1 %>%
@@ -87,7 +91,7 @@ tabla1 %>%
   aes(x = Producto, y = Valor) +
   geom_bar(stat="identity")
 
-# Gráfico boxplot
+  # Gráfico boxplot
 tabla1 %>%
   ggplot() +
   geom_boxplot(aes(x = Producto, y = Valor)) +
