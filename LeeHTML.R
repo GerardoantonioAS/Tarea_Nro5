@@ -217,7 +217,7 @@ dfBookingCom <- data.frame(nombre_hotel = textoBookingCom, rate = ratesBookingCo
 # Se asigna la segunda pÃ¡gina de reclamos.cl/trasportes
 paginaReclamosCl<- 'https://www.reclamos.cl/transportes?page=1'
 
-# Lellendo la pÃ¡gina de transportes
+# Leyendo la pÃ¡gina de transportes
 readHtmlReclamosCl <- read_html(paginaReclamosCl)
 
 # Extrayendo el contenido de la tabla que contiene todos los reclamos dispuestos en este sitio
@@ -231,4 +231,57 @@ linksReclamosCl <- html_attr(contenidoReclamosClA,"href")
 
 # Descargue cada uno de los link y guarde su informaciÃ³n
 
+#=========== usando http://www.deis.cl/estadisticas-laborales/ ===========#
 
+# Cómo descargar y leer un archivo excel con R
+
+# Librería para descargar la información
+# install.packages("RCurl")
+
+# Librería para leer excel
+# install.packages("readxl")
+
+# Usando las Librerías
+library(RCurl)
+library(readxl) # Para más información de como leer excel https://www.rdocumentation.org/packages/readxl/versions/1.2.0/topics/read_excel
+
+# Descargando el archivo Excel
+# download.file(URL_file ,destfile=Nombre_Local ,mode="wb")
+# URL_file: ubicación del archivo a descargar
+# Nombre_Local: nombre que tomará el archivo cuando lo descarge
+# mode="wb" modo para que el archivo no sea modificado y no tenga problemas al leerlo
+download.file("http://www.deis.cl/wp-content/uploads/2018/10/Accidentes-laborales-fatales-2007-2016.xlsx",destfile="Accidentes-laborales-fatales-2007-2016.xlsx",mode="wb")
+
+# Leyendo el Excel
+excelALF2007a2016 <- read_excel("Accidentes-laborales-fatales-2007-2016.xlsx")
+
+# Viendo el contenido de la variable excelALF2007a2016
+print(excelALF2007a2016)
+
+# Viendo algunos valor contenidos de la variable excelALF2007a2016
+print(excelALF2007a2016$..2)
+
+# Leyendo el excel con rangos definidos
+excelALF2007a2016DefYMor <- read_excel("Accidentes-laborales-fatales-2007-2016.xlsx",range = "B8:H18")
+
+# Viendo el contenido de la variable excelALF2007a2016DefYMor
+print(excelALF2007a2016DefYMor)
+
+# Viendo algunos valor contenidos de la variable excelALF2007a2016DefYMor
+print(excelALF2007a2016DefYMor$`Nº Def..2`)
+print(excelALF2007a2016DefYMor$Tasa..3)
+
+# Convirtiendo a data frame
+dfALF2007a2016DefYMor <- as.data.frame(excelALF2007a2016DefYMor)
+
+# Leyendo el excel con rangos definidos y otro sheet o hoja
+excelALF2007a2016Tabla1 <- read_excel("Accidentes-laborales-fatales-2007-2016.xlsx", range = "Tabla 1!A7:BJ25")
+
+# Viendo el contenido de la variable excelALF2007a2016Tabla1
+print(excelALF2007a2016Tabla1)
+
+# Viendo algunos valor contenidos de la variable excelALF2007a2016Tabla1
+print(excelALF2007a2016Tabla1$Defunciones..3)
+
+# Convirtiendo a data frame
+dfALF2007a2016Tabla1 <- as.data.frame(excelALF2007a2016Tabla1)
